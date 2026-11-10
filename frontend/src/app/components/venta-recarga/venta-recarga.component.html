@@ -1,0 +1,104 @@
+<div class="venta-recarga-container">
+  <h1>Venta de Recargas</h1>
+
+  <!-- Mensaje de notificación -->
+  <div *ngIf="mensaje" [class]="'alert alert-' + mensajeTipo">
+    {{ mensaje }}
+  </div>
+
+  <!-- Detalles de última venta -->
+  <div *ngIf="ultimaVenta" class="ultima-venta">
+    <h3>✅ Venta Exitosa</h3>
+    <p><strong>Referencia:</strong> {{ ultimaVenta.referenciaTransaccion }}</p>
+    <p><strong>Operador:</strong> {{ ultimaVenta.nombreOperador }}</p>
+    <p><strong>Número:</strong> {{ ultimaVenta.numeroCelular }}</p>
+    <p><strong>Valor:</strong> ${{ ultimaVenta.valor | number }}</p>
+    <p><strong>Comisión:</strong> ${{ ultimaVenta.comision | number }}</p>
+  </div>
+
+  <!-- Formulario de venta -->
+  <form (ngSubmit)="realizarVenta()" class="venta-form">
+    <!-- Filtro por operador -->
+    <div class="form-group">
+      <label for="operador">Operador (Opcional - Filtrar)</label>
+      <select 
+        id="operador" 
+        [(ngModel)]="operadorSeleccionado" 
+        name="operador"
+        (change)="onOperadorChange()"
+        class="form-control">
+        <option [ngValue]="null">Todos los operadores</option>
+        <option *ngFor="let op of operadores" [ngValue]="op.idOperador">
+          {{ op.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Selección de recarga -->
+    <div class="form-group">
+      <label for="recarga">Recarga *</label>
+      <select 
+        id="recarga" 
+        [(ngModel)]="recargaSeleccionada" 
+        name="recarga"
+        required
+        class="form-control">
+        <option [ngValue]="null">Selecciona una recarga</option>
+        <option *ngFor="let rec of recargasFiltradas" [ngValue]="rec.idRecarga">
+          {{ rec.operador.nombre }} - ${{ rec.valor | number }} 
+          (Comisión: ${{ rec.comision | number }})
+        </option>
+      </select>
+    </div>
+
+    <!-- Número celular -->
+    <div class="form-group">
+      <label for="celular">Número Celular *</label>
+      <input 
+        type="text" 
+        id="celular"
+        [(ngModel)]="numeroCelular"
+        name="celular"
+        placeholder="3001234567"
+        maxlength="10"
+        required
+        class="form-control">
+      <small>Ingresa 10 dígitos</small>
+    </div>
+
+    <!-- Observaciones -->
+    <div class="form-group">
+      <label for="observaciones">Observaciones (Opcional)</label>
+      <textarea 
+        id="observaciones"
+        [(ngModel)]="observaciones"
+        name="observaciones"
+        rows="3"
+        maxlength="500"
+        class="form-control"
+        placeholder="Comentarios adicionales..."></textarea>
+    </div>
+
+    <!-- Valor de recarga seleccionada -->
+    <div *ngIf="recargaSeleccionada" class="valor-seleccionado">
+      <strong>Valor a recargar:</strong> 
+      ${{ getRecargaValor(recargaSeleccionada) | number }}
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        [disabled]="loading"
+        class="btn btn-primary">
+        {{ loading ? 'Procesando...' : 'Realizar Venta' }}
+      </button>
+      <button 
+        type="button" 
+        (click)="limpiarFormulario()"
+        class="btn btn-secondary">
+        Limpiar
+      </button>
+    </div>
+  </form>
+</div>

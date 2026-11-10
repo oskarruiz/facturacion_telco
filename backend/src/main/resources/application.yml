@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: facturacion-telco
+  
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
+    username: telco_user
+    password: telco_password
+    driver-class-name: oracle.jdbc.OracleDriver
+    
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle12cDialect
+        format_sql: true
+        use_sql_comments: true
+        
+  security:
+    jwt:
+      secret-key: clave-secreta-jwt-facturacion-telco-2026-super-segura-cambiar-en-produccion
+      expiration: 86400000 # 24 horas en milisegundos
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    com.telco.facturacion: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
